@@ -1,54 +1,35 @@
 const { GraphQLServer } = require('graphql-yoga');
-
-// Populate dummy data to be returned later (a mock database in memory)
-const links = [
-  {
-    id: 'link-0',
-    url: 'www.howtographql.com',
-    description: 'Fullstack tutorial on GraphQL',
-  },
-  {
-    id: 'link-1',
-    url: 'www.howtographql2.com',
-    description: 'Fullstack tutorial on GraphQL - v2',
-  },
-];
-
-let idCount = links.length;
+const { prisma } = require('./generated/prisma-client');
 
 // Every field in the schema needs a resolver function
+// There are 4 arguments passed to each resolver: root, args, context, info
+// Similar to res.locals in the middleware chain, context is an readable
+// and writable object passed along the resolver chain.
+// We can access context.prisma because we attach it when we instantiate the GraphQLServer
+// More info on these arguments and info: https://www.prisma.io/blog/graphql-server-basics-demystifying-the-info-argument-in-graphql-resolvers-6f26249f613a
 const resolvers = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    feed: () => links,
-    link: (parent, args) => links[args.id.substring(5)],
+    feed: (root, args, context) => context.prisma.links(),
+    link: (root, args, context) => context.prisma.link({ id: args.id }),
   },
-
   Mutation: {
-    post: (parent, args) => {
-      const link = {
-        id: `link-${idCount++}`,
-        description: args.description,
-        url: args.url,
-      };
-      links.push(link);
-      return link;
+    post: (root, args, context) => context.prisma.createLink({
+      url: args.url,
+      description: args.description,
+    }),
+    updateLink: (root, args, context) => {
+      const data = {};
+      if (args.url) data.url = args.url;
+      if (args.description) data.description = args.description;
+      return context.prisma.updateLink({
+        data,
+        where: { id: args.id },
+      });
     },
-    updateLink: (parent, args) => {
-      const link = links[args.id.substring(5)];
-      if (!link) return null;
-      if (args.url) link.url = args.url;
-      if (args.description) link.description = args.description;
-      return link;
-    },
-
     // Lazy implementation of delete – doesn't fix IDs/index values
-    deleteLink: (parent, args) => {
-      const index = args.id.substring(5);
-      if (!links[index]) return null;
-      // Array.prototype.splice returns an array of the removed items
-      // In this case, there is only one removed item
-      return links.splice(index, 1)[0];
+    deleteLink: (parent, args, context) => {
+      return context.prisma.deleteLink({ id: args.id });
     },
   },
 
@@ -66,6 +47,7 @@ const resolvers = {
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
+  context: { prisma },
 });
 
 server.start(() => console.log('server running on localhost:4000'));
