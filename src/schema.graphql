@@ -1,0 +1,22 @@
+# Check out the GraphQL for VSCode extension for syntax highlighting
+
+# "Root types" are query, mutation, or subscription
+# "Root fields" are the first-level on the root type, e.g., info or feed
+# These root fields define the available API operations (i.e., what you can query)
+type Query {
+  info: String!
+  feed: [Link!]!
+  link(id: ID!): Link
+}
+
+type Mutation {
+  post(url: String!, description: String!): Link!
+  updateLink(id: ID!, url: String, description: String): Link
+  deleteLink(id: ID!): Link
+}
+
+type Link {
+  id: ID!
+  description: String!
+  url: String!
+}
