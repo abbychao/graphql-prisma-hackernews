@@ -1,3 +1,4 @@
+# After every change you’re making to the datamodel file, you need to redeploy the Prisma API (`prisma deploy` and `prisma generate`) to apply your changes and migrate the underlying database schema.
 # The @id directive is handled by Prisma and creates a globally unique ID for Link records
 # The @createdAt and @updatedAt directives are handled by Prisma and automatically manage these read-only fields
 
@@ -7,4 +8,15 @@ type Link {
   updatedAt: DateTime! @updatedAt
   description: String!
   url: String!
+  postedBy: User
+}
+
+type User {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String!
+  email: String! @unique
+  password: String!
+  links: [Link!]!
 }
