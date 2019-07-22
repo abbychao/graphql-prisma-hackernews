@@ -35,16 +35,29 @@ See below for sample queries, mutations, and subscriptions. For more root fields
 
 ## Queries on links
 
-This query illustrates 3 root fields available on the API: info, feed, link. (Choose an actual ID from the database to make the last one work.)
+These queries illustrate 3 root fields available on the API: info, feed, link. It also includes a filter for the feed root field. (Choose an actual ID from the database to make link work.)
 
 ```
 query {
   info
+}
+```
+
+```
+query {
   feed {
-    id
-    url
-    description
+    count
+    links {
+      id
+      description
+      url
+    }
   }
+}
+```
+
+```
+query {
   link(id:"12345") {
     id
     url
@@ -52,6 +65,22 @@ query {
   }
 }
 ```
+
+Here is another query using "first" and "skip" to implement pagination. See more here: https://www.howtographql.com/graphql-js/8-filtering-pagination-and-sorting/
+
+```
+query {
+  feed(
+    first: 1
+    skip: 1
+  ) {
+    id
+    description
+    url
+  }
+}
+```
+
 
 ## Mutations on links
 
