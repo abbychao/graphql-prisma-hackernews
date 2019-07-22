@@ -1,10 +1,41 @@
 # GraphQL Tutorial – Hacker News Clone
 
-Run `npm install` and `npm start`, and then navigate to `localhost:4000` to be able to run queries.
+Run `npm install` and `npm start`, and then navigate to `localhost:4000` to run queries.
 
-# Sample queries and mutations
+If you make any changes to the `prisma/datamodel.prisma` or `prisma/prisma.yml`, run `prisma deploy` and `prisma generate`.
 
-This query illustrates the 3 root fields available on the API: info, feed, link. (Update IDs to make the last one work.)
+Before running any queries, create a user (see the Authentication section below) or, at least, add the following HTTP header to your POST request:
+
+```
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjanllcjNlbjdlcnMxMGIzNnYzeXdscTEwIiwiaWF0IjoxNTYzODIxNzQ1fQ.dMwJM6jjmzBu5Aq9QmfXrAkMR20tQVxGHJ9fXC8DKYE"
+```
+
+## Authentication
+
+Run the following mutation query to create a user and get an authentication token. Copy the token from your response and include it as a header in any requests in order to post, update, or delete links.
+
+```
+mutation {
+  signup(
+    name: "Abby"
+    email: "abby@chao.com"
+    password: "graphql"
+  ) {
+    token
+    user {
+      id
+    }
+  }
+}
+```
+
+# Sample queries, mutations, and subscriptions
+
+See below for sample queries, mutations, and subscriptions. For more root fields, check the schema. 
+
+## Queries on links
+
+This query illustrates 3 root fields available on the API: info, feed, link. (Choose an actual ID from the database to make the last one work.)
 
 ```
 query {
@@ -14,7 +45,7 @@ query {
     url
     description
   }
-  link(id:"cjyejocf3bqbd0b36il5ix7e2") {
+  link(id:"12345") {
     id
     url
     description
@@ -22,7 +53,7 @@ query {
 }
 ```
 
-
+## Mutations on links
 
 These illustrate the 3 mutations available on the API: post, updateLink, deleteLink. (Update IDs to make each query work.)
 
@@ -36,7 +67,7 @@ mutation {
 
 mutation {
   updateLink(
-    id:"cjyejocf3bqbd0b36il5ix7e2"
+    id:"12345"
     url: "https://www.google.com"
     description: "A search engine"
   ) {
@@ -47,7 +78,7 @@ mutation {
 }
 
 mutation {
-  deleteLink (id: "cjyejocf3bqbd0b36il5ix7e2") {
+  deleteLink (id: "12345") {
     id
     url
     description
@@ -55,8 +86,25 @@ mutation {
 }
 ```
 
+## Subscription to any new link
 
-# Prisma Notes
+```
+subscription {
+  newLink {
+    id
+    url
+    description
+    postedBy {
+      id
+      name
+      email
+    }
+  }
+}
+
+```
+
+# Accessing Prisma
 
 Your Prisma endpoint is live:
 

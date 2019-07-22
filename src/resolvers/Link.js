@@ -1,5 +1,5 @@
 const Link = {
-  postedBy: (parent, args, context) => context.prisma.link({ id: parent.id }).postedBy,
+  postedBy: (parent, args, context) => context.prisma.link({ id: parent.id }).postedBy(),
   /*
     This shows how resolvers would work for a data type. However, since this implementation
     is so simple, it can actually be omitted and it will still work!
