@@ -29,4 +29,10 @@ const server = new GraphQLServer({
   }),
 });
 
+server.express.use((req, res, next) => {
+  res.set("custom-header", "this-is-the-custom-header");
+  res.cookie("cookie", "mmmmm-cookie");
+  return next();
+});
+
 server.start(() => console.log('server running on localhost:4000'));
