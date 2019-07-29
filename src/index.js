@@ -33,7 +33,7 @@ const server = new GraphQLServer({
 server.express.use(cookieParser(), (req, res, next) => {
   // console.log('cookies: ', JSON.stringify(req.cookies));
   res.set('server-header', 'this-is-the-custom-header');
-  res.cookie('server-cookie', 'mmmmm-cookie');
+  res.cookie('server-cookie', 'mmmmm-server-cookie');
   return next();
 });
 
