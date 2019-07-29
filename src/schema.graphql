@@ -10,9 +10,12 @@ type Query {
 }
 
 type Mutation {
-  post(url: String!, description: String!): Link!
+  postLink(url: String!, description: String!): Link!
   updateLink(id: ID!, url: String, description: String): Link
   deleteLink(id: ID!): Link
+  postLinkSecure(url: String!, description: String!): Link!
+  updateLinkSecure(id: ID!, url: String, description: String): Link
+  deleteLinkSecure(id: ID!): Link
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
 }
