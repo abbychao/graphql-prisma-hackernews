@@ -84,11 +84,13 @@ query {
 
 ## Mutations on links
 
-These illustrate the 3 mutations available on the API: post, updateLink, deleteLink. (Update IDs to make each query work.)
+These illustrate the 3 mutations available on the API: postLink, updateLink, deleteLink. (Update IDs to make each query work.)
+
+Each mutation also has a "secure" version (e.g., postLinkSecure) that requires an authorization token. Updating and deleting are only allowed by the original author.
 
 ```
 mutation {
-  post(
+  postLink(
     url: "www.prisma.io"
     description: "Prisma replaces traditional ORMs"
   ) { id, url }
