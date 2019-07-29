@@ -1,4 +1,5 @@
 const { GraphQLServer } = require('graphql-yoga');
+const cookieParser = require('cookie-parser');
 const { prisma } = require('./generated/prisma-client');
 const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
@@ -29,9 +30,10 @@ const server = new GraphQLServer({
   }),
 });
 
-server.express.use((req, res, next) => {
-  res.set("custom-header", "this-is-the-custom-header");
-  res.cookie("cookie", "mmmmm-cookie");
+server.express.use(cookieParser(), (req, res, next) => {
+  // console.log('cookies: ', JSON.stringify(req.cookies));
+  res.set('server-header', 'this-is-the-custom-header');
+  res.cookie('server-cookie', 'mmmmm-cookie');
   return next();
 });
 
