@@ -74,9 +74,11 @@ query {
     first: 1
     skip: 1
   ) {
-    id
-    description
-    url
+    links {
+      id
+      description
+      url
+    }
   }
 }
 ```
