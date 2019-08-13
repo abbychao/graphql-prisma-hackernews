@@ -7,8 +7,10 @@
 const Subscription = {
   newLink: {
     subscribe: (parent, args, context, info) => {
+      const { filter } = args;
       return context.prisma.$subscribe.link({
         mutation_in: ['CREATED'],
+        updatedFields_contains: filter,
       }).node();
     },
     resolve: payload => payload,
